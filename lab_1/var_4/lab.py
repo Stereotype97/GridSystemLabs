@@ -1,9 +1,9 @@
 import math
 import os
 
-H = 0.01
+H = 0.1
 
-def f(xi, yi, ui):
+def func(xi, yi, ui):
     # Example. Fill your function here
     return -yi
 
@@ -17,6 +17,40 @@ def euler_method_2(xi, yi, ui, func, h = H):
 
     u_ = ui + h * func(xi, yi, ui)
     y_ = yi + h * ui # ui = f2(xi, y1,i, yi)
+
+    return y_, u_
+
+
+# We have the Dif. equation, kind of y'' = f(x, y, y')
+# 
+# y' = u            (f - func)
+# u' = f(x, y, y)   (g - func)
+def runge_kutta_4_2(xi, yi, ui, func, h = H):
+    # calculations of additional coeficients
+    # all Ki are depending on f (only u(y') actually)
+    # all Li are depending on g (our y'' function)
+
+    # helper function, depending on u only
+    def f(xi, yi, ui):
+        return ui
+
+    k1 = h * f(xi, yi, ui)
+    l1 = h * func(xi, yi, ui)
+
+    k2 = h * f(xi + h / 2, yi + k1 / 2, ui + l1 / 2)
+    l2 = h * func(xi + h / 2, yi + k1 / 2, ui + l1 / 2)
+
+    k3 = h * f(xi + h / 2, yi + k2 / 2, ui + l2 / 2)
+    l3 = h * func(xi + h / 2, yi + k2 / 2, ui + l2 / 2)
+
+    k4 = h * f(xi + h, yi + k3, ui + l3)
+    l4 = h * func(xi + h, yi + k3, ui + l3)
+
+    dy = (k1 + 2 * k2 + 2 * k3 + k4) / 6
+    du = (l1 + 2 * l2 + 2 * l3 + l4) / 6
+
+    y_ = yi + dy
+    u_ = ui + du
 
     return y_, u_
 
@@ -44,7 +78,7 @@ def main():
     x_end = 10
     while x < x_end:
         # Choose your method of number calculations
-        y_new, u_new = euler_method_2(x_list[i], y_list[i], u_list[i], f)
+        y_new, u_new = runge_kutta_4_2(x_list[i], y_list[i], u_list[i], func)
         u_list.append(u_new)
         y_list.append(y_new)
 
