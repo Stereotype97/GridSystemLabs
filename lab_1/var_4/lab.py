@@ -20,6 +20,13 @@ def euler_method_2(xi, yi, ui, func, h = H):
 
     return y_, u_
 
+def euler_method_improved_2(xi, yi, ui, func, is_first_iteration, h = H):
+    step = h if not is_first_iteration else h / 2
+    u_ = ui + step  * func(xi, yi, ui)
+    y_ = yi + h * u_
+
+    return y_, u_
+
 
 # We have the Dif. equation, kind of y'' = f(x, y, y')
 # 
@@ -76,11 +83,19 @@ def main():
     i = 0
     x = x0
     x_end = 10
+    is_first_iteration_done = False
     while x < x_end:
         # Choose your method of number calculations
-        y_new, u_new = runge_kutta_4_2(x_list[i], y_list[i], u_list[i], func)
+        # y_new, u_new = euler_method_2(x_list[i], y_list[i], u_list[i], func)
+        # y_new, u_new = runge_kutta_4_2(x_list[i], y_list[i], u_list[i], func)
+        
+        y_new, u_new = euler_method_improved_2(x_list[i], y_list[i], u_list[i], func, is_first_iteration=not is_first_iteration_done)
         u_list.append(u_new)
         y_list.append(y_new)
+
+        # For improved euler method
+        if not is_first_iteration_done:
+            is_first_iteration_done = True
 
         x += h
         x_list.append(x)
