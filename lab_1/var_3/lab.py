@@ -2,8 +2,11 @@ H = 0.0001
 K1 = 100
 K2 = 100
 
-x01 = 0 
-x02 = 0
+l1 = 0.1
+l2 = 0.1
+
+x01 = l1
+x02 = l2 + x01
 
 def f1(x1, x2):
     return K2 * ((x2 - x1) - (x02 - x01)) - K1 * (x1 - x01)
@@ -43,27 +46,30 @@ def main():
     u2_list.append(u02) # first value
 
     x1_list = []
-    x1_list.append(x01 + 0.05)
+    x1_list.append(x01 + 0.05) # 0.1 + 0.05
     x2_list = []
-    x2_list.append(x02 + 0.05)
+    x2_list.append(x02 + 0.05) # 0.1 + 0.1 + 0.05
 
     h = H
     i = 0
-    while t0 < 10:
-        # Euler
-        u1_new = u1_list[i] + h * f1(x1_list[i], x2_list[i]) # f = f(t,x,u)
-        u2_new = u2_list[i] + h * f2(x1_list[i], x2_list[i])
+    t = t0
+    t_end = 10
+    while t < t_end:
 
+        # Using calculated x1 value
+        u1_new = u1_list[i] + h * f1(x1_list[i], x2_list[i]) # f = f(t,x,u)
+        x1_new = x1_list[i] + h * u1_list[i] # ui = f2(xi, y1,i, yi)
+        
         u1_list.append(u1_new)
+        x1_list.append(x1_new)
+
+        u2_new = u2_list[i] + h * f2(x1_new, x2_list[i])
         u2_list.append(u2_new)
         
-        x1_new = x1_list[i] + h * u1_list[i] # ui = f2(xi, y1,i, yi)
         x2_new = x2_list[i] + h * u2_list[i]
-
-        x1_list.append(x1_new)
         x2_list.append(x2_new)
 
-        t0 += h
+        t += h
 
         i += 1
 
