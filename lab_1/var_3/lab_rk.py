@@ -1,5 +1,10 @@
 import time
 from enum import Enum
+import sys
+
+sys.path.append('../')
+
+from graphic_for_lab import print_graphics
 
 H = 0.0001
 
@@ -131,6 +136,9 @@ def main():
     x2_list = []
     x2_list.append(x02 + 0.05) # 0.1 + 0.1 + 0.05
 
+    t_list = []
+    t_list.append(t0)
+
     h = H
     i = 0
     t = t0
@@ -146,13 +154,62 @@ def main():
         u2_list.append(u2_new)
 
         t += h
+        t_list.append(t)
 
         i += 1
 
     count = i + 1
+
+    data_file_names = []
+
+    data_file_name = 'data_of_first_body_position_versus_time.txt'
+    data_file_names.append(data_file_name)
+
+    f = open(data_file_name, 'w')
+
     for i in range(count):
-        print("x1 = {x1} x2 = {x2} v1 = {v1} v2 = {v2}".format(x1=x1_list[i], x2=x2_list[i], v1=u1_list[i], v2=u2_list[i]))
+        f.write(str(t_list[i]) + ',' + str(x1_list[i]) + '\n')
+    f.close()
+
+    data_file_name = 'data_of_second_body_position_versus_time.txt'
+    data_file_names.append(data_file_name)
+
+    f = open(data_file_name, 'w')
+
+    for i in range(count):
+        f.write(str(t_list[i]) + ',' + str(x2_list[i]) + '\n')
+    f.close()
+
+    print_graphics('plot_of_bodies_position_versus_time.png', data_file_names)
+
+    ###############################
+    data_file_names = []
+
+    data_file_name = 'data_of_changes_in_elongation_of_the_first_spring_over_time.txt'
+    data_file_names.append(data_file_name)
+
+    f = open(data_file_name, 'w')
+
+    for i in range(count):
+        f.write(str(t_list[i]) + ',' + str(x1_list[i] - x01) + '\n')
+    f.close()
+
+    data_file_name = 'data_of_changes_in_elongation_of_the_second_spring_over_time.txt'
+    data_file_names.append(data_file_name)
+
+    f = open(data_file_name, 'w')
+
+    for i in range(count):
+        f.write(str(t_list[i]) + ',' + str((x2_list[i] - x1_list[i]) - (x02 - x01)) + '\n')
+    f.close()
+
+    print_graphics('plot_of_spring_elongation_changes_over_time.png', data_file_names)
+
+    # for i in range(count):
+        # print("x1 = {x1} x2 = {x2} v1 = {v1} v2 = {v2}".format(x1=x1_list[i], x2=x2_list[i], v1=u1_list[i], v2=u2_list[i]))
         # time.sleep(0.02)
+
+    # t_list, x1_list, t_list, x2_list NOTE Done
 
 
 if __name__ == "__main__":
